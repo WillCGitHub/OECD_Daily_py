@@ -1,7 +1,7 @@
 """
 Code written by William CAO June 2016
 
-Calculate certain appeareance frequencies
+Calculate certain appeareances frequencies
 
 
 Lists that can be accessed
@@ -16,10 +16,11 @@ import csv
 from collections import Counter
 
 
-class DailyObj:
+class DailyUse:
 	def __init__(self,path):
 		self.path = path
-
+	def __str__(self):
+		return "{}".format(self.day[0])
 	def convert(self):
 		self.identityid = []
 		self.time = []
@@ -49,14 +50,15 @@ class DailyObj:
 		#split the time 
 		self.split()
 
-		#create a dict
-		self.result = dict()
+	def identity(self):
+		idDict = dict()
 		for idx in range(0,len(self.ip_add)):		
-			if self.result.get(self.ip_add[idx])is None:
-				self.result[self.ip_add[idx]] = [self.identityid[idx]]
+			if idDict.get(self.ip_add[idx])is None:
+				idDict[self.ip_add[idx]] = [self.identityid[idx]]
 			else:
-				if self.identityid[idx] not in set(self.result.get(self.ip_add[idx])):
-					self.result.get(self.ip_add[idx]).append(self.identityid[idx])
+				if self.identityid[idx] not in set(idDict.get(self.ip_add[idx])):
+					idDict.get(self.ip_add[idx]).append(self.identityid[idx])
+		return idDict
 					
 
 
@@ -147,9 +149,10 @@ class DailyObj:
 	def detail(self):
 		itemDict = self.item()
 		sessionDict = self.session()
+		identityDict = self.identity()
 		for ip in self.most_frequent:
 			print("IP: {} visited the sites {} times. ".format(ip[0],ip[1]))
-			print("Identity ID: {}".format(self.result.get(ip[0])[0]))
+			print("Identity ID: {}".format(identityDict.get(ip[0])[0]))
 			print("This IP address downloaded {} contents".format(len(itemDict.get(ip[0]))))
 			#print(itemDict.get(ip[0]))
 			print("Number of session ID: {}".format(len(sessionDict.get(ip[0]))))
@@ -162,19 +165,28 @@ class DailyObj:
 if __name__ =="__main__":
 
 	#Example
-	f1 = DailyObj("oecddaily20160531.csv")
+	f1 = DailyUse("Dataset/oecddaily20160602.csv")
+	
 	#convert to clean data
 	f1.convert()
+	
 	#most frequently visited time of the day
 	f1.time_freq()
+	
 	#most frequently visited IP address
 	f1.ip_freq(10)
+	
 	#detail information 
 	f1.detail()
+	
 	#most frequently downloaded content
 	f1.item_count(10)
+
 	#most frequently visited session id
+	#thier IPs, and content downloaded
 	f1.Analyze_by_session(10)
+
+	print(f1)
 	"""
 	for ip in f1.most_frequent:
 		identity = f1.result.get(ip[0])
