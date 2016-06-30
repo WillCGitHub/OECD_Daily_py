@@ -2,8 +2,9 @@
 Analyze data 
 Daily object or MultiDays object
 """
- 
+
 from collections import Counter
+import requests
 
 class Analyze(object):
 	"""docstring for Analyze"""
@@ -41,6 +42,7 @@ class Analyze(object):
 		h_list = Counter(self.hour).most_common(24) #showing how many results
 		for h in h_list:
 			print("Time: {}:00 (GMT+2), page view: {} \n".format(h[0],h[1]))
+		print("\n\n\n")
 
 
 	#how many session ids per IP address
@@ -81,7 +83,8 @@ class Analyze(object):
 		for s in most_freq_sessionid:
 			print("Session ID: {}, visited {} time(s).".format(s[0],s[1]))
 			print("IP: {}".format(IPs.get(s[0])))
-			print("The session downloaded {} items. \n Deatils: \n {} \n\n".format(len(session_Download.get(s[0])),session_Download.get(s[0])))
+			#detail list of downloaded content
+			print("The session downloaded {} items. \n Deatils: \n ... \n\n".format(len(session_Download.get(s[0]))))#,session_Download.get(s[0])))
 
 	def ip_freq(self,num_of_item):
 		ip_freq = Counter(self.dataPackage.ip_add)
@@ -102,22 +105,68 @@ class Analyze(object):
 	def item_count(self,num_of_item):
 		c = Counter (self.dataPackage.item_id)
 		item_list = c.most_common(num_of_item)
+		print("Top {} download".format(num_of_item))
 		for i in item_list:
 			print("Content: {} | Download volume: {} \n".format(i[0],i[1]))
+		print("\n\n\n")
 
 	#print out the detail information
 	def detail(self):
+		identityDict = self.identity()
+		#print("Top {} most frequently visited IPs".format(len(self.most_frequent)))
+		self.registered_user = [ip for ip in self.most_frequent if identityDict.get(ip[0])[0] != 'guest']
+		self.unregistered_user =[ip for ip in self.most_frequent if identityDict.get(ip[0])[0] == 'guest']
+		
+
+	def GeoIP(self,IP):
+		result = requests.get('http://ipinfo.io/{}'.format(IP)).json()
+		return result
+
+	def print_registered_user(self, num_of_result):
 		itemDict = self.item()
 		sessionDict = self.session()
 		identityDict = self.identity()
-		for ip in self.most_frequent:
+		num = 1
+		print("Registered user\n")
+		for ip in self.registered_user:
+			print("#{} ".format(num))
 			print("IP: {} visited the sites {} times. ".format(ip[0],ip[1]))
+			print("IP details:")
+			r = self.GeoIP(ip[0])
+			print("Organization: {} \nCity: {}\nCountry: {}\nCoordinates: {}".format(r.get('org'),r.get('city'),r.get('country'),r.get('loc')))
 			print("Identity ID: {}".format(identityDict.get(ip[0])[0]))
 			print("This IP address downloaded {} contents".format(len(itemDict.get(ip[0]))))
 			#print(itemDict.get(ip[0]))
 			print("Number of session ID: {}".format(len(sessionDict.get(ip[0]))))
-			print("Session ID: {}".format(sessionDict.get(ip[0])))
+			#print out for details
+			#print("Session ID: ... ")#.format(sessionDict.get(ip[0])))
 			print("\n \n \n")
+			if num == num_of_result:
+				break
+			num+=1
+
+	def print_unregistered_user(self, num_of_result):
+		itemDict = self.item()
+		sessionDict = self.session()
+		identityDict = self.identity()
+		num = 1
+		print("Unregistered user\n")
+		for ip in self.unregistered_user:
+			print("#{} ".format(num))
+			print("IP: {} visited the sites {} times. ".format(ip[0],ip[1]))
+			print("IP details:")
+			r = self.GeoIP(ip[0])
+			print("Organization: {} \nCity: {}\nCountry: {}\nCoordinates: {}".format(r.get('org'),r.get('city'),r.get('country'),r.get('loc')))
+			print("Identity ID: {}".format(identityDict.get(ip[0])[0]))
+			print("This IP address downloaded {} contents".format(len(itemDict.get(ip[0]))))
+			#print(itemDict.get(ip[0]))
+			print("Number of session ID: {}".format(len(sessionDict.get(ip[0]))))
+			#print out for details
+			#print("Session ID: ... ")#.format(sessionDict.get(ip[0])))
+			print("\n \n \n")
+			if num == num_of_result:
+				break
+			num+=1
 
 if __name__ =="__main__":
 	pass

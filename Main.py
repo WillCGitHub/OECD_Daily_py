@@ -6,6 +6,9 @@ from os import listdir
 from os.path import isfile,join
 import sys
 from functools import reduce
+import sys
+
+
 
 #do not read in hidden files
 def listdir_nohidden(path):
@@ -26,16 +29,35 @@ for file in fileList:
 multi = reduce(lambda x,y: x+y, process_list)
 print(multi)
 an = Analyze(multi)
-an.time_freq()
+#an.time_freq()
 #most frequently visited IP address
-an.ip_freq(10)
+
+#increase this number in order to fulfill the 
+#number of results to show in registered and 
+#unregistered user.
+an.ip_freq(300)
+
+
 	
 #detail information 
 an.detail()
-	
+
+#There might not enough registered user to show.
+#output registered user 
+fileName = "Registered_User_{}_{}".format(an.day[0],an.day[-1])
+sys.stdout = open('Result/{}.txt'.format(fileName), 'w')
+an.print_registered_user(30)
+
+#output unregistered user
+fileName = "Unregistered_User_{}_{}".format(an.day[0],an.day[-1])
+sys.stdout = open('Result/{}.txt'.format(fileName), 'w')
+an.print_unregistered_user(30)
+
+
+
 #most frequently downloaded content
-an.item_count(10)
+#an.item_count(10)
 
 #most frequently visited session id
 #thier IPs, and content downloaded
-an.Analyze_by_session(10)
+#an.Analyze_by_session(10)
