@@ -25,7 +25,7 @@ Analyze Object will take in either Daily object or MultiDays object
 an = Analyze(d)
 
 an.ip_freq(300)  # show the top 300 most frequently visited IPs
-an.detail()      # classify IPs by registered and unregistered users
+an.classify()      # classify IPs by registered and unregistered users
 an.print_registered_user(30) # top 30 registered users
 an.print_unregistered_user(30) # top 30 unregistered users
 IP = '192.168.1.1'
