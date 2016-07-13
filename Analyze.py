@@ -32,6 +32,20 @@ class Analyze(object):
 					idDict.get(self.dataPackage.ip_add[idx]).append(self.dataPackage.identityid[idx])
 		return idDict
 
+	def reg_ip_check(self):
+		reg_ip = dict()
+		regs = self.dataPackage.identityid
+		ips = self.dataPackage.ip_add
+		for idx,reg in enumerate(regs):
+			if reg != 'guest':
+				if reg_ip.get(reg) is None:
+					reg_ip[reg] = [ips[idx]]
+				else:
+					if ips[idx] not in set(reg_ip.get(reg)):
+						reg_ip.get(reg).append(ips[idx])
+		return reg_ip
+
+
 	def time_freq(self):
 		#convert to 24 H format
 		for idx in range(0,len(self.period)):
@@ -120,6 +134,25 @@ class Analyze(object):
 
 	def GeoIP(self,IP):
 		result = requests.get('http://ipinfo.io/{}'.format(IP)).json()
+		try:
+			print("Organization: {} ".format(result.get('org')))
+		except:
+			org = result.get('org').encode('utf-8').decode('ascii','ignore')
+			result['org'] = org
+			print("Organization: {} ".format(result.get('org')))
+		try:
+			print("City: {}".format(result.get('city')))
+		except:
+			city = result.get('city').encode('utf-8').decode('ascii','ignore')
+			result['city'] = city
+			print("City: {}".format(result.get('city')))
+		try:
+			print("Country: {}".format(result.get('country')))
+		except:
+			country = result.get('country').encode('utf-8').decode('ascii','ignore')
+			result['country'] = country
+			print("Country: {}".format(result.get('country')))
+
 		return result
 
 	def print_registered_user(self, num_of_result):
@@ -132,8 +165,12 @@ class Analyze(object):
 			print("#{} ".format(num))
 			print("IP: {} visited the sites {} times. ".format(ip[0],ip[1]))
 			print("IP details:")
-			r = self.GeoIP(ip[0])
-			print("Organization: {} \nCity: {}\nCountry: {}\nCoordinates: {}".format(r.get('org'),r.get('city'),r.get('country'),r.get('loc')))
+			try:
+				r = self.GeoIP(ip[0])
+			except:
+				print("Unable to load geographical information...")
+				print("Try to access the information through a browser manually...")
+				print("http://ipinfo.io/{}".format(ip[0]))
 			print("Identity ID: {}".format(identityDict.get(ip[0])[0]))
 			print("This IP address downloaded {} contents".format(len(itemDict.get(ip[0]))))
 			#print(itemDict.get(ip[0]))
@@ -155,8 +192,12 @@ class Analyze(object):
 			print("#{} ".format(num))
 			print("IP: {} visited the sites {} times. ".format(ip[0],ip[1]))
 			print("IP details:")
-			r = self.GeoIP(ip[0])
-			print("Organization: {} \nCity: {}\nCountry: {}\nCoordinates: {}".format(r.get('org'),r.get('city'),r.get('country'),r.get('loc')))
+			try:
+				r = self.GeoIP(ip[0])
+			except:
+				print("Unable to load geographical information...")
+				print("Try to access the information through a browser manually...")
+				print("http://ipinfo.io/{}".format(ip[0]))
 			print("Identity ID: {}".format(identityDict.get(ip[0])[0]))
 			print("This IP address downloaded {} contents".format(len(itemDict.get(ip[0]))))
 			#print(itemDict.get(ip[0]))

@@ -31,15 +31,34 @@ class Daily():
 		self.item_id = [] 
 		self.source = []
 
-		with open(self.path,newline='') as csvfile:
+		with open(self.path,newline='',encoding='utf-8') as csvfile:
 			reader = csv.reader(csvfile,delimiter=',')
 			for row in reader:
-				self.identityid.append(row[1])
-				self.time.append(row[2])
-				self.sessionid.append(row[3])
-				self.ip_add.append(row[4])
-				self.item_id.append(row[6])
-				self.source.append(row[9])
+				#avoid decoding error
+				try:
+					self.identityid.append(row[1])
+				except:
+					pass
+				try:
+					self.time.append(row[2])
+				except:
+					pass
+				try:
+					self.sessionid.append(row[3])
+				except:
+					pass
+				try:
+					self.ip_add.append(row[4])
+				except:
+					pass
+				try:
+					self.item_id.append(row[6])
+				except:
+					pass
+				try:
+					self.source.append(row[9])
+				except:
+					pass
 		
 		#get rid of the labels
 		self.time.pop(0)
