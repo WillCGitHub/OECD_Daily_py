@@ -31,38 +31,30 @@ multi = reduce(lambda x,y: x+y, process_list)
 
 print(multi)
 
+"""ANALYZE"""
 an = Analyze(multi)
-#an.time_freq()
-#most frequently visited IP address
 
-#increase this number in order to fulfill the 
-#number of results to show in registered and 
-#unregistered user.
+
+"""increase this number(300) in order to have enough
+results to show in registered and unregistered user."""
 an.ip_freq(300)
 
+an.classify()
 
-	
-#detail information 
-an.detail()
+"""There might not enough registered user to show.
+output registered user """
 
-#There might not enough registered user to show.
-#output registered user 
 fileName = "Registered_User_{}_{}".format(an.day[0],an.day[-1])
-
 with open('Result/{}.txt'.format(fileName), 'w') as f:
 	sys.stdout = f
 	an.print_registered_user(30)
 
-#output unregistered user
+
 fileName = "Unregistered_User_{}_{}".format(an.day[0],an.day[-1])
-sys.stdout = open('Result/{}.txt'.format(fileName), 'w')
-an.print_unregistered_user(30)
+with open('Result/{}.txt'.format(fileName), 'w') as f:
+	sys.stdout = f
+	an.print_unregistered_user(30)
 
 
-#most frequently downloaded content
-#an.item_count(10)
 
-#most frequently visited session id
-#thier IPs, and content downloaded
-#an.Analyze_by_session(10)
 

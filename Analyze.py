@@ -125,7 +125,7 @@ class Analyze(object):
 		print("\n\n\n")
 
 	#print out the detail information
-	def detail(self):
+	def classify(self):
 		identityDict = self.identity()
 		#print("Top {} most frequently visited IPs".format(len(self.most_frequent)))
 		self.registered_user = [ip for ip in self.most_frequent if identityDict.get(ip[0])[0] != 'guest']
