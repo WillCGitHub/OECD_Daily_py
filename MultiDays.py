@@ -12,9 +12,11 @@ class MultiDays(object):
 		self.item_id = item_id
 		self.source = source
 		self.Days_counter = Days_counter
-		self.internval = "{} -- {} ".format(self.Days_counter,self.time[0],self.time[-1])
+		self.interval = "{} -- {} ".format(self.Days_counter,self.time[0],self.time[-1])
 	def __str__(self):
 		return "Data for {} days. {} -- {} ".format(self.Days_counter,self.time[0],self.time[-1])
+	def __repr__(self):
+		return self.interval
 	def __add__(self,other):
 		total_identityid = self.identityid + other.identityid
 		total_time = self.time + other.time

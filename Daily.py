@@ -12,6 +12,8 @@ class Daily():
 
 	def __str__(self):
 		return "{} | {} records".format(self.day[0], len(self.day))
+	def __repr__(self):
+		return self.day
 	def __add__(self,other):
 		total_identityid = self.identityid + other.identityid
 		total_time = self.time + other.time
